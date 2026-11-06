@@ -1,0 +1,49 @@
+# Veröffentlichung nur der ausdrücklich geprüften Dateien erlauben.
+# Neue App-Dateien müssen vor einer Veröffentlichung hier freigegeben werden.
+*
+!/.gitignore
+!/index.html
+!/style.css
+!/script.js
+!/pwa.js
+!/sw.js
+!/manifest.webmanifest
+!/README.md
+!/icons/
+!/icons/icon-192.png
+!/icons/icon-512.png
+!/icons/icon-maskable-512.png
+
+# Persönliche Daten, Sicherungen und Zugangsdaten ausdrücklich ausschließen.
+*.json
+getraenketracker-backup-*
+getraenketracker-sicherheitskopie-*
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+/backups/
+/private/
+/data/
+/tmp/
+/temp/
+/node_modules/
+/.vscode/
+/.idea/
+/.codex/
+/.agents/
+
+# Das Original bleibt lokal; die drei abgeleiteten PWA-Icons reichen aus.
+/icons/420-orginal.png
+/icons/420-original.png

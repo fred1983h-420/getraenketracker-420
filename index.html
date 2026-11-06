@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Getränketracker 420</title>
+  <meta name="theme-color" content="#0868bc">
+  <meta name="application-name" content="Getränketracker 420">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <script src="pwa.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="eyebrow">DEIN TÄGLICHER ÜBERBLICK</p>
+      <h1>Getränketracker 420</h1>
+      <p class="subtitle">Getränk wählen. Menge wählen. Alles im Blick.</p>
+      <p id="pwa-status" class="section-note" role="status" aria-live="polite"></p>
+    </header>
+
+    <section class="summary" aria-labelledby="today-heading">
+      <div class="summary-heading">
+        <h2 id="today-heading">Heute</h2>
+        <span id="today-date"></span>
+      </div>
+      <div class="stats" aria-live="polite" aria-atomic="true">
+        <div><strong id="daily-total">0,00 l</strong><span>Flüssigkeit erfasst</span></div>
+        <div><strong id="daily-count">0</strong><span>Einträge heute</span></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="drinks-heading">
+      <h2 id="drinks-heading">Getränk hinzufügen</h2>
+      <div class="date-controls">
+        <label for="selected-date">Tag ansehen und Getränke dafür erfassen</label>
+        <input id="selected-date" type="date" required>
+        <button id="select-today" type="button">Heute</button>
+      </div>
+      <p id="capture-date" class="capture-date" aria-live="polite"></p>
+      <p class="section-note">Wähle zuerst ein Getränk und danach die Menge.</p>
+      <div id="drink-buttons" class="drink-grid"></div>
+      <section id="amount-selection" class="amount-selection" aria-labelledby="amount-heading" hidden>
+        <h2 id="amount-heading">Menge wählen</h2>
+        <p class="section-note">Ein Klick auf die Menge speichert dein Getränk sofort.</p>
+        <div id="amount-buttons" class="amount-grid"></div>
+        <button id="toggle-amounts" class="amount-toggle" type="button" aria-expanded="false" aria-controls="extra-amount-buttons">Weitere Größen anzeigen</button>
+        <div id="extra-amount-buttons" class="amount-grid" hidden></div>
+      </section>
+    </section>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <p id="storage-error" class="error" role="alert" hidden></p>
+
+    <section aria-labelledby="history-heading">
+      <div class="history-heading"><h2 id="history-heading">Tageshistorie</h2><span id="history-date"></span></div>
+      <p id="selected-summary" class="section-note"></p>
+      <p id="empty-state" class="empty-state">Noch keine Getränke erfasst. Starte mit deiner ersten Auswahl oben.</p>
+      <ul id="history" class="history"></ul>
+    </section>
+    <section class="statistics" aria-labelledby="statistics-heading">
+      <h2 id="statistics-heading">Statistiken</h2>
+      <label for="statistics-period">Zeitraum</label>
+      <select id="statistics-period">
+        <option value="7">Letzte 7 Kalendertage</option>
+        <option value="30">Letzte 30 Kalendertage</option>
+        <option value="all">Gesamte Historie</option>
+      </select>
+      <p id="statistics-range" class="section-note"></p>
+      <div class="stats" aria-live="polite">
+        <div><strong id="statistics-total">0,00 l</strong><span>Gesamtmenge</span></div>
+        <div><strong id="statistics-average">0,00 l</strong><span>Pro Kalendertag</span></div>
+      </div>
+      <h3>Getränkeverteilung</h3>
+      <ul id="distribution" class="distribution"></ul>
+      <h3>Liter pro Tag</h3>
+      <p class="section-note">Horizontal scrollen für weitere Tage. Jeder Balken zeigt einen Kalendertag, auch Tage ohne Einträge.</p>
+      <div class="chart-scroll" tabindex="0" role="region" aria-label="Tagesdiagramm, horizontal scrollbar">
+        <div id="daily-chart" class="daily-chart"></div>
+      </div>
+    </section>
+    <section class="backup-section" aria-labelledby="backup-heading">
+      <h2 id="backup-heading">Datensicherung</h2>
+      <div class="backup-card">
+        <h3>Export</h3>
+        <p>Alle gespeicherten Einträge als JSON-Datei herunterladen. Deine Daten werden dabei nicht verändert.</p>
+        <button id="export-backup" type="button">Sicherung erstellen</button>
+      </div>
+      <div class="backup-card">
+        <h3>Import und Wiederherstellung</h3>
+        <p>Eine Sicherung zuerst nur prüfen und ansehen. Wiederherstellung ersetzt den vollständigen Datenbestand; es wird nichts zusammengeführt.</p>
+        <button id="choose-backup" type="button">Sicherung importieren</button>
+        <input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="JSON-Sicherungsdatei auswählen">
+        <div id="import-preview" hidden>
+          <p id="import-summary"></p>
+          <p class="backup-warning">Achtung: Der bisherige Datenbestand wird vollständig durch die ausgewählte Sicherung ersetzt. Auch eine leere Sicherung ersetzt alle bisherigen Einträge.</p>
+          <button id="download-safety" type="button">1. Sicherheitskopie der aktuellen Daten herunterladen</button>
+          <label class="backup-confirmation">
+            <input id="safety-confirmed" type="checkbox" disabled>
+            <span>Ich habe die Sicherheitskopie erfolgreich gespeichert und kann auf die JSON-Datei zugreifen.</span>
+          </label>
+          <button id="replace-data" class="danger-button" type="button" disabled>2. Datenbestand ersetzen …</button>
+          <div id="final-confirmation" class="backup-warning" hidden>
+            <p id="replace-summary"></p>
+            <button id="confirm-replace" class="danger-button" type="button">Ja, bisherigen Datenbestand endgültig ersetzen</button>
+          </div>
+          <button id="cancel-import" type="button">Import abbrechen</button>
+        </div>
+      </div>
+      <p id="backup-status" role="status" aria-live="polite"></p>
+      <p id="backup-error" class="error" role="alert" hidden></p>
+    </section>
+    <footer>Version 1.7 · Kalender: Europe/Berlin · Deine Daten bleiben in diesem Browser.</footer>
+  </main>
+</body>
+</html>
